@@ -8,7 +8,6 @@ using json = nlohmann::json;
 
 // Path to the database file
 const std::string DB_PATH = "/etc/wol/database.json";
-// const std::string DB_PATH = "/home/sgonsan/Proyects/wake/code/database.json";
 
 // Help function
 void help() {
