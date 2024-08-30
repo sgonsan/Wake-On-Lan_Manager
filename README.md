@@ -1,4 +1,4 @@
-# Wake-on-LAN (WOL) Manager
+# Wake-on-LAN Manager
 
 Este proyecto es una herramienta sencilla en C++ para gestionar y enviar paquetes de Wake-on-LAN (WOL) a dispositivos de tu red. Permite registrar direcciones MAC de tus dispositivos, guardarlas en una base de datos local y despertarlos cuando lo necesites.
 
