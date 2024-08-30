@@ -13,11 +13,13 @@ const std::string DB_PATH = "/etc/wol/database.json";
 void help() {
   std::cout << "Usage: wake <command> [arguments...]" << std::endl;
   std::cout << "Commands:" << std::endl;
+  std::cout << "  <name>              Wake a device" << std::endl;
   std::cout << "  add <name> <mac>    Add a device to the database"
             << std::endl;
   std::cout << "  remove <name>       Remove a device from the database"
             << std::endl;
-  std::cout << "  <name>              Wake a device" << std::endl;
+  std::cout << "  list                List the devices in the database"
+            << std::endl;
 }
 
 // Function to load the database
