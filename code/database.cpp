@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "include/nlohmann/json.hpp"
+#include "include/utils.hpp"
 
 using json = nlohmann::json;
 
@@ -52,6 +53,48 @@ void addDevice(const std::string& name, const std::string& mac) {
   saveDatabase(database);
   std::cout << "The device " << name << " (" << mac
             << ") has been added to the database" << std::endl;
+}
+
+// Function to edit a device in the database
+void editDevice(const std::string& oldName) {
+  std::string newName;
+  std::string newMac;
+  auto database = loadDatabase();
+
+  // Check if the device is in the database
+  if (database.find(oldName) == database.end()) {
+    std::cout << "The device " << oldName << " is not in the database"
+              << std::endl;
+    return;
+  }
+
+  std::cout << "Enter the new name for the device [" << oldName << "]: ";
+  std::getline(std::cin, newName);
+  std::cout << "Enter the new MAC address for the device ["
+            << database[oldName] << "]: ";
+  std::getline(std::cin, newMac);
+
+  // If a new name is provided, update it
+  if (!newName.empty() && oldName != newName) {
+    if (database.find(newName) != database.end()) {
+      std::cout << "A device with the name " << newName << " already exists"
+                << std::endl;
+      return;
+    }
+    database[newName] = database[oldName];
+    database.erase(oldName);
+  }
+
+  // If a new MAC address is provided, update it
+  if (!newMac.empty() && isMac(newMac)) {
+    database[newName.empty() ? oldName : newName] = newMac;
+  } else if (!newMac.empty()) {
+    std::cout << "The MAC address " << newMac << " is not valid" << std::endl;
+    return;
+  }
+
+  saveDatabase(database);
+  std::cout << "The device has been updated successfully" << std::endl;
 }
 
 void removeDevice(const std::string& name) {

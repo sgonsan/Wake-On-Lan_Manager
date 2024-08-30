@@ -13,6 +13,7 @@ CFLAGS = -Wall
 all: $(TARGET)
 
 $(TARGET): $(SOURCES)
+	make clean
 	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCES)
 
 clean:
