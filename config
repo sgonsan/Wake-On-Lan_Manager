@@ -14,6 +14,3 @@ SOURCES=code/main.cpp
 
 # Target directory
 TARGET_DIR=./build
-
-# Execute command
-EXECUTION="./$PROGRAM_NAME"
