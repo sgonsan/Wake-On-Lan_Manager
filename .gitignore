@@ -1,1 +1,3 @@
 .vscode/
+*.code-workspace
+compile_and_execute.sh
