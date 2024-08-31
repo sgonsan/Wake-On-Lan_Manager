@@ -4,10 +4,11 @@ Este proyecto es una herramienta sencilla en C++ para gestionar y enviar paquete
 
 ## Funcionalidades
 
+- **Enviar paquete WOL**: Despierta un dispositivo registrado enviando un paquete WOL a su dirección MAC.
 - **Añadir dispositivo**: Registra un nuevo dispositivo en la base de datos con un nombre y su dirección MAC.
+- **Editar dispositivo**: Modifica el nombre o la dirección MAC de un dispositivo registrado.
 - **Eliminar dispositivo**: Elimina un dispositivo registrado de la base de datos.
 - **Listar dispositivos**: Muestra todos los dispositivos registrados en la base de datos.
-- **Enviar paquete WOL**: Despierta un dispositivo registrado enviando un paquete WOL a su dirección MAC.
 
 ## Instalación
 
