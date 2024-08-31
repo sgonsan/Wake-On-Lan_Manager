@@ -38,14 +38,15 @@ El programa `wake` ofrece varios comandos para interactuar con la base de datos 
   sudo ./wake add
   ```
 
-  Ejemplo:
+  A continuación, se te pedirá que ingreses el nombre y la dirección MAC del dispositivo que deseas añadir. Si el nombre ya está en uso o la dirección MAC es inválida, se mostrará un mensaje de error.
 
+- **Editar un dispositivo**:
+
+  ```bash
+  sudo ./wake edit
   ```
-  sudo ./wake add
-  Enter the name of the device: MiPC
-  Enter the MAC address of the device: 00:11:22:33:44:55
-  Device MiPC (00:11:22:33:44:55) has been added with ID 1
-  ```
+
+  A continuación, se te pedirá que ingreses el ID del dispositivo que deseas editar, que se muestra en ese momento. Si el ID no es válido, se mostrará un mensaje de error. Luego, se te pedirá que ingreses el nuevo nombre y la nueva dirección MAC del dispositivo. Si dejas un campo vacío, se mantendrá el valor actual. Si el nombre ya está en uso o la dirección MAC es inválida, se mostrará un mensaje de error.
 
 - **Eliminar un dispositivo**:
 
@@ -53,15 +54,7 @@ El programa `wake` ofrece varios comandos para interactuar con la base de datos 
   sudo ./wake remove
   ```
 
-  Ejemplo:
-
-  ```bash
-  sudo ./wake remove
-  Select the device you want to remove:
-  1: MiPC (00:11:22:33:44:55)
-  Enter the ID of the device to remove: 
-  Do you want to remove the device "MiPC" (00:11:22:33:44:55)? (y/n): y
-  ```
+  A continuación, se te pedirá que ingreses el ID del dispositivo que deseas eliminar, que se muestra en ese momento. Si el ID no es válido, se mostrará un mensaje de error.
 
 - **Listar los dispositivos registrados**:
 
@@ -69,11 +62,11 @@ El programa `wake` ofrece varios comandos para interactuar con la base de datos 
   ./wake list
   ```
 
-  Ejemplo:
+  Se mostrará una lista de todos los dispositivos registrados en la base de datos, con su ID, nombre y dirección MAC, con un formato similar a este:
 
-  ```bash
-  ./wake list
-  1: MiPC (00:11:22:33:44:55)
+  ```
+  1. MiPC (00:11:22:33:44:55)
+  2. MiLaptop (AA:BB:CC:DD:EE:FF)
   ```
 
 - **Despertar un dispositivo**:
@@ -82,40 +75,90 @@ El programa `wake` ofrece varios comandos para interactuar con la base de datos 
   ./wake <nombre>
   ```
 
-  Ejemplo:
-
-  ```bash
-  ./wake MiPC
-  Waking up MiPC (00:11:22:33:44:55)...
-  Sending magic packet to 255.255.255.255:9 with 00:11:22:33:44:55
-  ```
+  Donde `<nombre>` es el nombre del dispositivo que deseas despertar, enviado un paquete WOL a su dirección MAC. Si el nombre no coincide con ningún dispositivo registrado, se mostrará un mensaje de error.
 
 ### Base de Datos
 
-La base de datos se almacena en formato JSON en el archivo `/etc/wol/database.json`. Para realizar cambios en la base de datos, como añadir o eliminar dispositivos, se requieren permisos de superusuario, por lo que deberás usar `sudo` para esos comandos.
+La base de datos de dispositivos se guarda en un archivo JSON llamado `database.json` en el directorio /etc/wol. Si el archivo no existe, se creará automáticamente la primera vez que se añada un dispositivo. Si deseas modificar manualmente la base de datos, puedes hacerlo editando el archivo `database.json` directamente.
 
-## Seguridad
+### Permisos de Administrador
 
-El archivo de la base de datos está ubicado en `/etc/wol/database.json` para asegurar que solo usuarios con permisos adecuados puedan modificar la lista de dispositivos. Puedes cambiar la ubicación de este archivo si prefieres otra ruta o si deseas evitar el uso de `sudo` para cada operación.
+Para añadir o eliminar dispositivos, es necesario ejecutar el programa como superusuario. Puedes hacerlo de la siguiente manera:
+
+```bash
+sudo ./wake <comando>
+```
 
 ## Ejemplo de Uso
 
-1. **Añadir un dispositivo**:
+A continuación, te mostramos un ejemplo de cómo usar el programa `wake` para gestionar dispositivos y enviar paquetes WOL:
 
-```bash
-sudo ./wake add Server1 01:23:45:67:89:AB
-```
+1. Despertar el dispositivo "MiPC":
 
-2. **Despertar un dispositivo**:
+   ```bash
+   ./wake MiPC
+   ```
 
-```bash
-./wake Server1
-```
+   ```
+   Waking up device MiPC (00:11:22:33:44:55)...
+   Sending magic packet to 255.255.255.255:9 with 00:11:22:33:44:55
+   ```
+
+2. Añadir un dispositivo llamado "MiPC" con la dirección MAC "00:11:22:33:44:55":
+
+   ```bash
+   sudo ./wake add
+   ```
+
+   ```
+   Enter the name of the device: MiPC
+   Enter the MAC address of the device: 00:11:22:33:44:55
+   Device MiPC (00:11:22:33:44:55) has been added with ID 1
+   ```
+
+3. Editar el dispositivo "MiPC" para cambiar su nombre a "MiOrdenador":
+
+   ```bash
+   sudo ./wake edit
+   ```
+
+   ```
+   Select the device you want to edit:
+   1: MiPC (00:11:22:33:44:55)
+   Enter the ID of the device to edit: 1
+   Enter the new name for the device [MiPC]: MiOrdenador
+   Enter the new MAC address for the device [00:11:22:33:44:55]:
+   The device has been updated successfully
+   ```
+
+4. Eliminar el dispositivo "MiPC":
+
+   ```bash
+   sudo ./wake remove
+   ```
+
+   ```
+   Select the device you want to remove:
+   1: mipc (00:11:22:33:44:55)
+   Enter the ID of the device to remove: 1
+   Do you want to remove the device MiPC (00:11:22:33:44:55? [y/N] y
+   The device has been removed successfully
+   ```
+
+5. Listar los dispositivos registrados:
+
+   ```bash
+   ./wake list
+   ```
+
+   ```
+   1. MiPC (00:11:22:33:44:55)
+   ```
 
 ## Contribuciones
 
 Si deseas contribuir a este proyecto, siéntete libre de hacer un fork del repositorio, realizar tus cambios y enviar un pull request. También puedes abrir issues para reportar bugs o sugerir mejoras.
 
-## Licencia
+<!-- ## Licencia
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles. -->

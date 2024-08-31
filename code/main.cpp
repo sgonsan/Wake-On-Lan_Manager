@@ -9,14 +9,10 @@ void help() {
   std::cout << "Usage: wake <command> [arguments...]" << std::endl;
   std::cout << "Commands:" << std::endl;
   std::cout << "  <name>              Wake a device" << std::endl;
-  std::cout << "  add <name> <mac>    Add a device to the database"
-            << std::endl;
-  std::cout << "  edit <oldName>      Edit a device in the database"
-            << std::endl;
-  std::cout << "  remove <name>       Remove a device from the database"
-            << std::endl;
-  std::cout << "  list                List the devices in the database"
-            << std::endl;
+  std::cout << "  add                 Add a device" << std::endl;
+  std::cout << "  remove              Remove a device" << std::endl;
+  std::cout << "  edit                Edit a device" << std::endl;
+  std::cout << "  list                List all devices" << std::endl;
 }
 
 int main(int argc, char* argv[]) {

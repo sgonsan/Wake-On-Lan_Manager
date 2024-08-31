@@ -144,7 +144,7 @@ void removeDevice() {
   if (database.find(id) != database.end()) {
     std::cout << "Do you want to remove the device "
               << database[id].substr(0, database[id].find(';')) << " ("
-              << database[id].substr(database[id].find(';') + 1) << "? [y/N] ";
+              << database[id].substr(database[id].find(';') + 1) << ")? [y/N] ";
     std::string answer;
     std::getline(std::cin, answer);
     if (answer == "y" || answer == "Y") {
