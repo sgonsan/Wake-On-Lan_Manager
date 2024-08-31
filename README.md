@@ -13,7 +13,10 @@ Este proyecto es una herramienta sencilla en C++ para gestionar y enviar paquete
 
 ### Dependencias
 
-Este proyecto depende de la biblioteca [nlohmann/json](https://github.com/nlohmann/json) para la manipulación de archivos JSON. Asegúrate de tenerla disponible en tu sistema.
+Este proyecto tiene las siguientes dependencias:
+
+- **wakeonlan**: Utilidad para enviar paquetes WOL en sistemas Linux.
+- **[nlohmann/json](https://github.com/nlohmann/json)**: Librería de JSON para C++.
 
 ### Compilación
 
@@ -32,31 +35,45 @@ El programa `wake` ofrece varios comandos para interactuar con la base de datos 
 - **Añadir un dispositivo**:
 
   ```bash
-  sudo ./wake add <nombre> <direccion_mac>
+  sudo ./wake add
   ```
 
   Ejemplo:
 
-  ```bash
-  sudo ./wake add MiPC 00:11:22:33:44:55
+  ```
+  sudo ./wake add
+  Enter the name of the device: MiPC
+  Enter the MAC address of the device: 00:11:22:33:44:55
+  Device MiPC (00:11:22:33:44:55) has been added with ID 1
   ```
 
 - **Eliminar un dispositivo**:
 
   ```bash
-  sudo ./wake remove <nombre>
+  sudo ./wake remove
   ```
 
   Ejemplo:
 
   ```bash
-  sudo ./wake remove MiPC
+  sudo ./wake remove
+  Select the device you want to remove:
+  1: MiPC (00:11:22:33:44:55)
+  Enter the ID of the device to remove: 
+  Do you want to remove the device "MiPC" (00:11:22:33:44:55)? (y/n): y
   ```
 
 - **Listar los dispositivos registrados**:
 
   ```bash
   ./wake list
+  ```
+
+  Ejemplo:
+
+  ```bash
+  ./wake list
+  1: MiPC (00:11:22:33:44:55)
   ```
 
 - **Despertar un dispositivo**:
@@ -69,6 +86,8 @@ El programa `wake` ofrece varios comandos para interactuar con la base de datos 
 
   ```bash
   ./wake MiPC
+  Waking up MiPC (00:11:22:33:44:55)...
+  Sending magic packet to 255.255.255.255:9 with 00:11:22:33:44:55
   ```
 
 ### Base de Datos

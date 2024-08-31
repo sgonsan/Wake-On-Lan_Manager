@@ -57,7 +57,9 @@ void addDevice() {
   std::getline(std::cin, mac);
 
   if (!isMac(mac)) {
-    std::cout << "The MAC address " << mac << (mac.empty() ? "cannot be empty" : " is not valid") << std::endl;
+    std::cout << "The MAC address " << mac
+              << (mac.empty() ? "cannot be empty" : " is not valid")
+              << std::endl;
     return;
   }
 
@@ -140,8 +142,9 @@ void removeDevice() {
   std::getline(std::cin, id);
 
   if (database.find(id) != database.end()) {
-    std::cout << "Do you want to remove the device " << database[id]
-              << "? [y/N] ";
+    std::cout << "Do you want to remove the device "
+              << database[id].substr(0, database[id].find(';')) << " ("
+              << database[id].substr(database[id].find(';') + 1) << "? [y/N] ";
     std::string answer;
     std::getline(std::cin, answer);
     if (answer == "y" || answer == "Y") {
