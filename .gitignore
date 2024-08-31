@@ -1,3 +1,3 @@
 .vscode/
-*.code-workspace
+wake.code-workspace
 compile_and_execute.sh
