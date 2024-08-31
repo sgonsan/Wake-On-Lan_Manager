@@ -20,9 +20,9 @@ std::map<std::string, std::string> loadDatabase() {
 
   std::ifstream file(DB_PATH);
   if (file.is_open()) {
-    json root;
-    file >> root;
-    for (const auto& key : root.items()) {
+    json raw;
+    file >> raw;
+    for (const auto& key : raw.items()) {
       database[key.key()] = key.value();
     }
   }
@@ -31,89 +31,126 @@ std::map<std::string, std::string> loadDatabase() {
 }
 
 void saveDatabase(const std::map<std::string, std::string>& database) {
-  json root;
+  json raw;
   for (const auto& entry : database) {
-    root[entry.first] = entry.second;
+    raw[entry.first] = entry.second;
   }
 
   std::ofstream file(DB_PATH);
-  file << root;
+  file << raw;
 }
 
-void addDevice(const std::string& name, const std::string& mac) {
+void addDevice() {
+  std::string name;
+  std::string mac;
   auto database = loadDatabase();
-  for (const auto& entry : database) {
-    if (entry.first == name || entry.second == mac) {
-      std::cout << "The device " << name << " (" << mac
-                << ") is already in the database" << std::endl;
-      return;
-    }
+
+  std::cout << "Enter the name of the device: ";
+  std::getline(std::cin, name);
+
+  if (name.empty()) {
+    std::cout << "The name cannot be empty" << std::endl;
+    return;
   }
-  database[name] = mac;
+
+  std::cout << "Enter the MAC address of the device: ";
+  std::getline(std::cin, mac);
+
+  if (!isMac(mac)) {
+    std::cout << "The MAC address " << mac << (mac.empty() ? "cannot be empty" : " is not valid") << std::endl;
+    return;
+  }
+
+  int id = 1;
+  if (!database.empty()) {
+    id = std::stoi(database.rbegin()->first) +
+         1;  // Get the last ID and increment it
+  }
+
+  database[std::to_string(id)] = name + ";" + mac;  // Save as "id: name;mac"
   saveDatabase(database);
-  std::cout << "The device " << name << " (" << mac
-            << ") has been added to the database" << std::endl;
+
+  std::cout << "Device " << name << " (" << mac << ") has been added with ID "
+            << id << std::endl;
 }
 
 // Function to edit a device in the database
-void editDevice(const std::string& oldName) {
-  std::string newName;
-  std::string newMac;
+void editDevice() {
   auto database = loadDatabase();
-
-  // Check if the device is in the database
-  if (database.find(oldName) == database.end()) {
-    std::cout << "The device " << oldName << " is not in the database"
-              << std::endl;
+  if (database.empty()) {
+    std::cout << "The database is empty" << std::endl;
     return;
   }
 
-  std::cout << "Enter the new name for the device [" << oldName << "]: ";
-  std::getline(std::cin, newName);
-  std::cout << "Enter the new MAC address for the device ["
-            << database[oldName] << "]: ";
-  std::getline(std::cin, newMac);
+  std::cout << "Select the device you want to edit:" << std::endl;
+  for (const auto& entry : database) {
+    // Display ID: name (mac)
+    std::string name = entry.second.substr(0, entry.second.find(';'));
+    std::string mac = entry.second.substr(entry.second.find(';') + 1);
+    std::cout << entry.first << ": " << name << " (" << mac << ")" << std::endl;
+  }
+  std::string id;
+  std::cout << "Enter the ID of the device to edit: ";
+  std::getline(std::cin, id);
 
-  // If a new name is provided, update it
-  if (!newName.empty() && oldName != newName) {
-    if (database.find(newName) != database.end()) {
-      std::cout << "A device with the name " << newName << " already exists"
-                << std::endl;
+  if (database.find(id) != database.end()) {
+    std::string newName, newMac;
+    std::string currentName = database[id].substr(0, database[id].find(';'));
+    std::string currentMac = database[id].substr(database[id].find(';') + 1);
+
+    std::cout << "Enter the new name for the device [" << currentName << "]: ";
+    std::getline(std::cin, newName);
+    std::cout << "Enter the new MAC address for the device [" << currentMac
+              << "]: ";
+    std::getline(std::cin, newMac);
+
+    if (!newName.empty()) currentName = newName;
+    if (!newMac.empty() && isMac(newMac)) {
+      currentMac = newMac;
+    } else if (!newMac.empty()) {
+      std::cout << "The MAC address " << newMac << " is not valid" << std::endl;
       return;
     }
-    database[newName] = database[oldName];
-    database.erase(oldName);
-  }
 
-  // If a new MAC address is provided, update it
-  if (!newMac.empty() && isMac(newMac)) {
-    database[newName.empty() ? oldName : newName] = newMac;
-  } else if (!newMac.empty()) {
-    std::cout << "The MAC address " << newMac << " is not valid" << std::endl;
-    return;
+    database[id] = currentName + ";" + currentMac;
+    saveDatabase(database);
+    std::cout << "The device has been updated successfully" << std::endl;
+  } else {
+    std::cout << "No device found with ID " << id << std::endl;
   }
-
-  saveDatabase(database);
-  std::cout << "The device has been updated successfully" << std::endl;
 }
 
-void removeDevice(const std::string& name) {
+void removeDevice() {
   auto database = loadDatabase();
-  if (database.find(name) != database.end()) {
-    std::cout << "Do you want to remove the device " << name << " ("
-              << database[name] << ") from the database? [y/N] ";
+  if (database.empty()) {
+    std::cout << "The database is empty" << std::endl;
+    return;
+  }
+
+  std::cout << "Select the device you want to remove:" << std::endl;
+  for (const auto& entry : database) {
+    // Display ID: name (mac)
+    std::string name = entry.second.substr(0, entry.second.find(';'));
+    std::string mac = entry.second.substr(entry.second.find(';') + 1);
+    std::cout << entry.first << ": " << name << " (" << mac << ")" << std::endl;
+  }
+
+  std::string id;
+  std::cout << "Enter the ID of the device to remove: ";
+  std::getline(std::cin, id);
+
+  if (database.find(id) != database.end()) {
+    std::cout << "Do you want to remove the device " << database[id]
+              << "? [y/N] ";
     std::string answer;
     std::getline(std::cin, answer);
-    if (answer != "y" && answer != "Y") {
-      return;
+    if (answer == "y" || answer == "Y") {
+      database.erase(id);
+      saveDatabase(database);
+      std::cout << "The device has been removed successfully" << std::endl;
     }
-    database.erase(name);
-    saveDatabase(database);
-    std::cout << "The device " << name << " has been removed from the database"
-              << std::endl;
   } else {
-    std::cout << "The device " << name << " is not in the database"
-              << std::endl;
+    std::cout << "No device found with ID " << id << std::endl;
   }
 }
 
@@ -121,11 +158,14 @@ void listDevices() {
   auto database = loadDatabase();
   if (database.empty()) {
     std::cout << "The database is empty" << std::endl;
-  } else {
-    std::cout << "Devices in the database:" << std::endl;
-    for (const auto& entry : database) {
-      std::cout << "  " << entry.first << " (" << entry.second << ")"
-                << std::endl;
-    }
+    return;
+  }
+
+  std::cout << "Devices in the database:" << std::endl;
+  for (const auto& entry : database) {
+    // Display ID: name (mac)
+    std::string name = entry.second.substr(0, entry.second.find(';'));
+    std::string mac = entry.second.substr(entry.second.find(';') + 1);
+    std::cout << entry.first << ": " << name << " (" << mac << ")" << std::endl;
   }
 }

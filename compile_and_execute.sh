@@ -20,6 +20,6 @@ if [ $? -ne 0 ]; then
   echo -e "${COLOR_RED}Compile error.${COLOR_RESET}"
 else
   echo -e "${COLOR_GREEN}Successful build.${COLOR_RESET}"
+  sudo cp build/$PROGRAM_NAME /bin/$PROGRAM_NAME
+  echo -e "${COLOR_YELLOW}Executable copied to /bin/$PROGRAM_NAME.${COLOR_RESET}"
 fi
-
-sudo cp build/$PROGRAM_NAME /bin/$PROGRAM_NAME

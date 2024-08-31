@@ -7,11 +7,14 @@
 
 void wakeDevice(const std::string& name) {
   auto database = loadDatabase();
-  if (database.find(name) != database.end()) {
-    std::string command = "wakeonlan " + database[name];
-    std::system(command.c_str());
-  } else {
-    std::cout << "The device " << name << " is not in the database"
-              << std::endl;
+  for (const auto& entry : database) {
+    std::string deviceName = entry.second.substr(0, entry.second.find(';'));
+    std::string mac = entry.second.substr(entry.second.find(';') + 1);
+    if (deviceName == name) {
+      std::string command = "wakeonlan " + mac;
+      std::cout << "Waking up " << name << " (" << mac << ")..." << std::endl;
+      system(command.c_str());
+      return;
+    }
   }
 }

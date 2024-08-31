@@ -27,31 +27,12 @@ int main(int argc, char* argv[]) {
 
   std::string command = argv[1];
   if (command == "add") {
-    if (argc < 4) {
-      std::cout << "Usage: " << argv[0] << " add <name> <mac>" << std::endl;
-      help();
-      return 1;
-    }
-    addDevice(argv[2], argv[3]);
-  } else if (command == "edit") {
-    if (argc < 2) {
-      std::cout << "Usage: " << argv[0] << " edit <oldName>" << std::endl;
-      help();
-      return 1;
-    }
-    editDevice(argv[2]);
+    addDevice();
   } else if (command == "remove") {
-    if (argc < 3) {
-      std::cout << "Usage: " << argv[0] << " remove <name>" << std::endl;
-      help();
-      return 1;
-    }
-    removeDevice(argv[2]);
+    removeDevice();
+  } else if (command == "edit") {
+    editDevice();
   } else if (command == "list") {
-    if (argc != 2) {
-      help();
-      return 1;
-    }
     listDevices();
   } else {
     wakeDevice(argv[1]);
