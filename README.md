@@ -1,165 +1,159 @@
 # Wake-on-LAN Manager
 
-Este proyecto es una herramienta sencilla en C++ para gestionar y enviar paquetes de Wake-on-LAN (WOL) a dispositivos de tu red. Permite registrar direcciones MAC de tus dispositivos, guardarlas en una base de datos local y despertarlos cuando lo necesites.
+This project is a simple C++ tool to manage and send Wake-on-LAN (WOL) packets to devices on your network. It allows you to register MAC addresses of your devices, store them in a local database, and wake them up when needed.
 
-## Funcionalidades
+## Features
 
-- **Enviar paquete WOL**: Despierta un dispositivo registrado enviando un paquete WOL a su dirección MAC.
-- **Añadir dispositivo**: Registra un nuevo dispositivo en la base de datos con un nombre y su dirección MAC.
-- **Editar dispositivo**: Modifica el nombre o la dirección MAC de un dispositivo registrado.
-- **Eliminar dispositivo**: Elimina un dispositivo registrado de la base de datos.
-- **Listar dispositivos**: Muestra todos los dispositivos registrados en la base de datos.
+-**Send WOL packet**: Wake up a registered device by sending a WOL packet to its MAC address.
 
-## Instalación
+- **Add device**: Register a new device in the database with a name and its MAC address.
 
-### Dependencias
+- **Edit device**: Modify the name or MAC address of a registered device.
 
-Este proyecto tiene las siguientes dependencias:
+- **Remove device**: Delete a registered device from the database.
 
-- **wakeonlan**: Utilidad para enviar paquetes WOL en sistemas Linux.
-- **[nlohmann/json](https://github.com/nlohmann/json)**: Librería de JSON para C++.
+- **List devices**: Show all registered devices in the database.
 
-### Compilación
+## Installation
 
-Para compilar el proyecto, utiliza un compilador C++ compatible con C++11 o superior. Puedes compilarlo usando `g++` de la siguiente manera:
+### Dependencies
+
+This project requires the following dependencies:
+
+- **wakeonlan**: A command-line tool to send WOL packets. You can install it using the following command:
+
+  ```bash
+  sudo apt install wakeonlan
+  ```
+
+- **[nlohmann/json](https://github.com/nlohmann/json)**: A JSON library for C++. You can download the single header file from the [releases page](https://github.com/nlohmann/json/releases) and place it in the project directory.
+
+### Compilation
+
+To compile the project, you can use the following command:
 
 ```bash
 g++ -o wake main.cpp -std=c++11
 ```
 
-## Uso
+## Usage
 
-El programa `wake` ofrece varios comandos para interactuar con la base de datos y gestionar los dispositivos. Aquí te explicamos cómo usarlos:
+The `wake` program provides a simple command-line interface to manage devices and send WOL packets. You can use the following commands:
 
-### Comandos
+### Commands
 
-- **Añadir un dispositivo**:
+- **Send WOL packet**: Wake up a device by its name.
+
+  ```bash
+  ./wake <device>
+  ```
+
+- **Add device**: Register a new device in the database.
 
   ```bash
   sudo ./wake add
   ```
 
-  A continuación, se te pedirá que ingreses el nombre y la dirección MAC del dispositivo que deseas añadir. Si el nombre ya está en uso o la dirección MAC es inválida, se mostrará un mensaje de error.
-
-- **Editar un dispositivo**:
+- **Edit device**: Modify the name or MAC address of a registered device.
 
   ```bash
   sudo ./wake edit
   ```
 
-  A continuación, se te pedirá que ingreses el ID del dispositivo que deseas editar, que se muestra en ese momento. Si el ID no es válido, se mostrará un mensaje de error. Luego, se te pedirá que ingreses el nuevo nombre y la nueva dirección MAC del dispositivo. Si dejas un campo vacío, se mantendrá el valor actual. Si el nombre ya está en uso o la dirección MAC es inválida, se mostrará un mensaje de error.
-
-- **Eliminar un dispositivo**:
+- **Remove device**: Delete a registered device from the database.
 
   ```bash
   sudo ./wake remove
   ```
 
-  A continuación, se te pedirá que ingreses el ID del dispositivo que deseas eliminar, que se muestra en ese momento. Si el ID no es válido, se mostrará un mensaje de error.
-
-- **Listar los dispositivos registrados**:
+- **List devices**: Show all registered devices in the database.
 
   ```bash
   ./wake list
   ```
 
-  Se mostrará una lista de todos los dispositivos registrados en la base de datos, con su ID, nombre y dirección MAC, con un formato similar a este:
+### Database
 
-  ```
-  1. MiPC (00:11:22:33:44:55)
-  2. MiLaptop (AA:BB:CC:DD:EE:FF)
-  ```
+The device database is stored in a JSON file called `database.json` in the /etc/wol directory. If the file does not exist, it will be created automatically the first time a device is added. If you want to manually modify the database, you can do so by editing the `database.json` file directly.
 
-- **Despertar un dispositivo**:
+### Superuser
 
-  ```bash
-  ./wake <nombre>
-  ```
-
-  Donde `<nombre>` es el nombre del dispositivo que deseas despertar, enviado un paquete WOL a su dirección MAC. Si el nombre no coincide con ningún dispositivo registrado, se mostrará un mensaje de error.
-
-### Base de Datos
-
-La base de datos de dispositivos se guarda en un archivo JSON llamado `database.json` en el directorio /etc/wol. Si el archivo no existe, se creará automáticamente la primera vez que se añada un dispositivo. Si deseas modificar manualmente la base de datos, puedes hacerlo editando el archivo `database.json` directamente.
-
-### Permisos de Administrador
-
-Para añadir o eliminar dispositivos, es necesario ejecutar el programa como superusuario. Puedes hacerlo de la siguiente manera:
+To run the `wake` program with superuser privileges, you need to use `sudo` for the `add`, `edit`, and `remove` commands:
 
 ```bash
-sudo ./wake <comando>
+sudo ./wake <command>
 ```
 
-## Ejemplo de Uso
+## Examples
 
-A continuación, te mostramos un ejemplo de cómo usar el programa `wake` para gestionar dispositivos y enviar paquetes WOL:
+Here are some examples of how to use the `wake` program:
 
-1. Despertar el dispositivo "MiPC":
+1. Wake up a device called "MyPC":
 
    ```bash
-   ./wake MiPC
+   ./wake MyPC
    ```
 
-   ```
-   Waking up device MiPC (00:11:22:33:44:55)...
+   ```output
+   Waking up device MyPC (00:11:22:33:44:55)...
    Sending magic packet to 255.255.255.255:9 with 00:11:22:33:44:55
    ```
 
-2. Añadir un dispositivo llamado "MiPC" con la dirección MAC "00:11:22:33:44:55":
+2. Add a new device called "MyPC" with MAC address "00:11:22:33:44:55":
 
    ```bash
    sudo ./wake add
    ```
 
-   ```
-   Enter the name of the device: MiPC
+   ```output
+   Enter the name of the device: MyPC
    Enter the MAC address of the device: 00:11:22:33:44:55
-   Device MiPC (00:11:22:33:44:55) has been added with ID 1
+   Device MyPC (00:11:22:33:44:55) has been added with ID 1
    ```
 
-3. Editar el dispositivo "MiPC" para cambiar su nombre a "MiOrdenador":
+3. Edit the device "MyPC" to change its name to "MyComputer":
 
    ```bash
    sudo ./wake edit
    ```
 
-   ```
+   ```output
    Select the device you want to edit:
-   1: MiPC (00:11:22:33:44:55)
+   1: MyPC (00:11:22:33:44:55)
    Enter the ID of the device to edit: 1
-   Enter the new name for the device [MiPC]: MiOrdenador
+   Enter the new name for the device [MyPC]: MyComputer
    Enter the new MAC address for the device [00:11:22:33:44:55]:
    The device has been updated successfully
    ```
 
-4. Eliminar el dispositivo "MiPC":
+4. Remove the device "MyPC":
 
    ```bash
    sudo ./wake remove
    ```
 
-   ```
+   ```output
    Select the device you want to remove:
-   1: mipc (00:11:22:33:44:55)
+   1: MyPC (00:11:22:33:44:55)
    Enter the ID of the device to remove: 1
-   Do you want to remove the device MiPC (00:11:22:33:44:55? [y/N] y
+   Do you want to remove the device MyPC (00:11:22:33:44:55)? [y/N] y
    The device has been removed successfully
    ```
 
-5. Listar los dispositivos registrados:
+5. List all registered devices:
 
    ```bash
    ./wake list
    ```
 
+   ```output
+   1. MyPC (00:11:22:33:44:55)
    ```
-   1. MiPC (00:11:22:33:44:55)
-   ```
 
-## Contribuciones
+## Contributing
 
-Si deseas contribuir a este proyecto, siéntete libre de hacer un fork del repositorio, realizar tus cambios y enviar un pull request. También puedes abrir issues para reportar bugs o sugerir mejoras.
+If you have any suggestions, improvements, or bug fixes, feel free to open an issue or create a pull request.
 
-<!-- ## Licencia
+## License
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles. -->
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
