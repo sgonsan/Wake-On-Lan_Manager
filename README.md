@@ -4,7 +4,7 @@ This project is a simple C++ tool to manage and send Wake-on-LAN (WOL) packets t
 
 ## Features
 
--**Send WOL packet**: Wake up a registered device by sending a WOL packet to its MAC address.
+- **Send WOL packet**: Wake up a registered device by sending a WOL packet to its MAC address.
 
 - **Add device**: Register a new device in the database with a name and its MAC address.
 
